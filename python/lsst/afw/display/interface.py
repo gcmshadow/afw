@@ -411,7 +411,12 @@ class Display:
         if name is None:
             return self._maskPlaneColors
         else:
-            return self._maskPlaneColors.get(name)
+            color = self._maskPlaneColors.get(name)
+
+            if color is None:
+                color = self._defaultMaskPlaneColor.get(name)
+
+            return color
 
     def setMaskTransparency(self, transparency=None, name=None):
         """!Specify display's mask transparency (percent); or None to not set it when loading masks"""
@@ -442,6 +447,22 @@ class Display:
         """!Uniconify and Raise display.  N.b. throws an exception if frame doesn't exit"""
         return self._impl._show()
 
+    def __addMissingMaskPlanes(self, mask):
+        """Assign colours to any missing mask planes found in mask"""
+
+        maskPlanes = mask.getMaskPlaneDict()
+        nMaskPlanes = max(maskPlanes.values()) + 1
+
+        planes = {}                      # build inverse dictionary from mask plane index to name
+        for key in maskPlanes:
+            planes[maskPlanes[key]] = key
+
+        colorGenerator = self.display.maskColorGenerator(omitBW=True)
+        for p in range(nMaskPlanes):
+            name = planes[p]            # ordered by plane index
+            if name not in self._defaultMaskPlaneColor:
+                self.setDefaultMaskPlaneColor(name, next(colorGenerator))
+
     def mtv(self, data, title="", wcs=None):
         """!Display an Image or Mask on a DISPLAY display
 
@@ -467,6 +488,7 @@ class Display:
             self._impl._mtv(data, None, wcs, title)
         # it's a Mask; display it, bitplane by bitplane
         elif isinstance(data, afwImage.Mask):
+            self.__addMissingMaskPlanes(data)
             #
             # Some displays can't display a Mask without an image; so display an Image too,
             # with pixel values set to the mask
@@ -474,6 +496,7 @@ class Display:
             self._impl._mtv(afwImage.ImageI(data.getArray()), data, wcs, title)
         # it's a MaskedImage; display Image and overlay Mask
         elif isinstance(data, afwImage.MaskedImage):
+            self.__addMissingMaskPlanes(data.mask)
             self._impl._mtv(data.getImage(), data.getMask(), wcs, title)
         else:
             raise RuntimeError("Unsupported type %s" % repr(data))
