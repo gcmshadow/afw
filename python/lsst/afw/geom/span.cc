@@ -22,11 +22,13 @@
 
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
+#include "pybind11/numpy.h"
 
 #include "lsst/afw/geom/Span.h"
 #include "lsst/afw/geom/SpanPixelIterator.h"
 
 namespace py = pybind11;
+using namespace pybind11::literals;
 
 namespace lsst {
 namespace afw {
@@ -90,7 +92,7 @@ PYBIND11_MODULE(span, mod) {
     cls.def("getMin", &Span::getMin);
     cls.def("getMax", &Span::getMax);
     cls.def("contains", (bool (Span::*)(int) const) & Span::contains);
-    cls.def("contains", (bool (Span::*)(int, int) const) & Span::contains);
+    cls.def("contains", py::vectorize((bool (Span::*)(int, int) const)&Span::contains), "x"_a, "y"_a);
     cls.def("contains", (bool (Span::*)(lsst::geom::Point2I const &) const) & Span::contains);
     cls.def("isEmpty", &Span::isEmpty);
     cls.def("toString", &Span::toString);
