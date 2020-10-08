@@ -1,2 +1,2 @@
-dm_libs:master
+dm_libs:u_gcm_shadow
 spl_testdata:u/gcm/shadow
