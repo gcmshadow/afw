@@ -22,7 +22,7 @@
 #
 import sys
 import matplotlib.pyplot as plt
-
+    
 import lsst.afw.cameraGeom.utils as cameraGeomUtils
 from lsst.log import Log
 
