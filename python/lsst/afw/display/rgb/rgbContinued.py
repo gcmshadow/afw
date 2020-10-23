@@ -471,8 +471,8 @@ def writeRGB(fileName, rgbImage):
 
 
 @deprecated(reason="Use `AsinhMapping` instead. To be removed after 20.0.0.",
-            category=FutureWarning)  # noqa: N801
-class asinhMappingF:
+            category=FutureWarning)  # noqa: N801 (FIXME: remove for py 3.8+)
+class asinhMappingF:  # noqa: N801
     """Deprecated object used to support legacy API
     """
 
