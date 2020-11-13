@@ -137,6 +137,7 @@ private:
     // A separate boolean leads to easier implementations (at the cost of more
     // memory) than a unique_ptr<string>.
     // _band and _physical are part of the object state iff _hasBand and _hasPhysical, respectively
+    // Class invariant: at least one of _hasBand, _hasPhysical is true
     bool _hasBand, _hasPhysical;
     std::string _band, _physical;
 
