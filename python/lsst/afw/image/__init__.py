@@ -39,6 +39,7 @@ from .exposure import *
 from .photoCalib import *
 from .imagePca import *
 from .imageUtils import *
+from .exposureSummary import *
 
 from .basicUtils import *
 from .testUtils import *
